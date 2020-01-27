@@ -25,33 +25,40 @@ import java.util.stream.Collectors;
 
 public class App {
 
-    public static final int DEFAULT_WIDTH = 1200;
-    public static final int DEFAULT_HEIGHT = 600;
-    public static final int INCREMENT = 1;
-    public static final int MAX_BUTTON_QUANTITY = 30;
+    private static final int DEFAULT_SCREEN_WIDTH = 1200;
+    private static final int DEFAULT_SCREEN_HEIGHT = 600;
+    private static final int INCREMENT = 1;
+    private static final int MAX_BUTTON_QUANTITY = 30;
+    private static final String WRONG_QUANTITY_MESSAGE = "Sorry, but number must be from 1 to 30";
+    private static final int DEFAULT_INDENT = 20;
+    private static final int DEFAULT_LENGTH = 10;
+    private static final int BUTTON_WIDTH = 80;
 
-    private Insets insets = new Insets(20, 20, 0, 20);
+    private Insets insets = new Insets(DEFAULT_INDENT, DEFAULT_INDENT, 0, DEFAULT_INDENT);
     private JTextField textField;
     private JButton button;
+
+    public static void main(String[] args) {
+        new App().new IntroScreen();
+    }
 
     public class IntroScreen extends JFrame {
 
         private static final String INTRO_MESSAGE = "How many numbers to display?";
-        public static final String ENTER_BUTTON = "Enter";
-        public static final String INTRO_SCREEN_NAME = "Intro Screen";
+        private static final String ENTER_BUTTON = "Enter";
+        private static final String INTRO_SCREEN_NAME = "Intro Screen";
 
         public IntroScreen() {
             JFrame introFrame = new JFrame(INTRO_SCREEN_NAME);
-
             addComponentsToIntroScreenContainer(introFrame);
-            introFrame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            introFrame.setSize(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
             introFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             introFrame.setLocationRelativeTo(null);
             introFrame.setVisible(true);
         }
 
         private void addComponentsToIntroScreenContainer(JFrame introFrame) {
-            Font font = new Font("Serif", Font.BOLD, 20);
+            Font font = new Font("Serif", Font.BOLD, DEFAULT_INDENT);
             Container container = introFrame.getContentPane();
             container.setLayout(new GridBagLayout());
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -80,7 +87,7 @@ public class App {
                     jFrame.setVisible(false);
                     new SortScreen();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Please, input numbers from 1 to 30");
+                    JOptionPane.showMessageDialog(null, WRONG_QUANTITY_MESSAGE);
                 }
             };
         }
@@ -97,27 +104,26 @@ public class App {
 
     public class SortScreen extends JFrame {
 
-        public static final String WRONG_QUANTITY_MESSAGE = "Please select a value smaller or equal to 30.";
-        public static final String SORT_SCREEN_NAME = "Sort Screen";
-        public static final int MAX_RANDOM_NUMBER = 1000;
-        public static final String SORT_BUTTON_NAME = "Sort";
-        public static final String RESET_BUTTON_NAME = "Reset";
+        private static final String SORT_SCREEN_NAME = "Sort Screen";
+        private static final int MAX_RANDOM_NUMBER = 1000;
+        private static final String SORT_BUTTON_NAME = "Sort";
+        private static final String RESET_BUTTON_NAME = "Reset";
 
         private List<Integer> listOfNumbers;
 
         public SortScreen() {
             JFrame sortFrame = new JFrame(SORT_SCREEN_NAME);
             addComponentsToSortScreenContainer(sortFrame);
-            sortFrame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            sortFrame.setSize(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
             sortFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             sortFrame.setLocationRelativeTo(null);
             sortFrame.setVisible(true);
         }
 
-        public SortScreen(List<Integer> list) {
+        public SortScreen(List<Integer> sortedList) {
             JFrame sortFrame = new JFrame(SORT_SCREEN_NAME);
-            addSortedComponentsToSortScreenContainer(sortFrame, list);
-            sortFrame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            addSortedComponentsToSortScreenContainer(sortFrame, sortedList);
+            sortFrame.setSize(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
             sortFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             sortFrame.setLocationRelativeTo(null);
             sortFrame.setVisible(true);
@@ -135,14 +141,14 @@ public class App {
             addFuncButtons(gridBagConstraints, sortFrame);
         }
 
-        private void addSortedComponentsToSortScreenContainer(JFrame sortFrame, List<Integer> list) {
+        private void addSortedComponentsToSortScreenContainer(JFrame sortFrame, List<Integer> sortedList) {
             Container container = sortFrame.getContentPane();
             container.setLayout(new GridBagLayout());
-            int buttonNum = list.size();
+            int buttonNum = sortedList.size();
 
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.insets = insets;
-            listOfNumbers = list;
+            listOfNumbers = sortedList;
             addNumberButtons(gridBagConstraints, buttonNum, listOfNumbers, sortFrame);
             addFuncButtons(gridBagConstraints, sortFrame);
         }
@@ -161,9 +167,8 @@ public class App {
                                       List<Integer> listOfNumbers, JFrame sortFrame) {
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.gridx = 0;
-            int numbInColumn = 10;
             for (int i = 0, y = 0; i < buttonNum; i++, y++) {
-                if (y == numbInColumn) {
+                if (y == DEFAULT_LENGTH) {
                     y = 0;
                     gridBagConstraints.gridx += INCREMENT;
                 }
@@ -221,14 +226,14 @@ public class App {
 
     private JButton getJButton(String name, Color color, ActionListener actionListener) {
         button = new JButton(name);
-        button.setPreferredSize(new Dimension(80, 30));
+        button.setPreferredSize(new Dimension(BUTTON_WIDTH, MAX_BUTTON_QUANTITY));
         button.setBackground(color);
         button.addActionListener(actionListener);
         return button;
     }
 
     private JTextField getJTextField(Font font) {
-        textField = new JTextField(10);
+        textField = new JTextField(DEFAULT_LENGTH);
         textField.setFont(font);
         return textField;
     }
