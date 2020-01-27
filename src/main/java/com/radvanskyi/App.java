@@ -69,7 +69,7 @@ public class App {
             gridBagConstraints.gridy += INCREMENT;
             container.add(getJTextField(font), gridBagConstraints);
             gridBagConstraints.gridy += INCREMENT;
-            button = getJButton(ENTER_BUTTON, Color.CYAN, getSortScreenListener(introFrame));
+            button = getJButton(ENTER_BUTTON, Color.CYAN, getNewScreenListener(introFrame));
             container.add(button, gridBagConstraints);
         }
 
@@ -79,7 +79,7 @@ public class App {
             return jLabel;
         }
 
-        private ActionListener getSortScreenListener(JFrame jFrame) {
+        private ActionListener getNewScreenListener(JFrame jFrame) {
             return e -> {
                 String content = textField.getText();
                 int buttonNum = checkValidInputAndGetNumber(content);
