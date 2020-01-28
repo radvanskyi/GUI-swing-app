@@ -4,10 +4,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.swing.JFrame;
-import javax.swing.JTextField;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JTextField;
 
 public class AppTest extends Assert {
 
@@ -15,16 +16,15 @@ public class AppTest extends Assert {
     private static final String EXPECTING_RESULT = "30";
 
     private App app;
-    private JFrame sortFrame;
     private JTextField textField;
+    JFrame jFrame;
 
     @Before
     public void setUp() {
         app = new App();
-        JFrame introFrame = app.new IntroScreen();
         textField = app.getTextField();
-        introFrame.add(textField);
         textField.setName(INPUT);
+        jFrame = new JFrame();
     }
 
     @Test
@@ -34,23 +34,29 @@ public class AppTest extends Assert {
         assertEquals(EXPECTING_RESULT, textField.getText());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void shouldThrowNullPointerExceptionWhenNewSortScreenWithoutIntroScreenTest() {
-        sortFrame = new App().new SortScreen();
-    }
-
     @Test
     public void sortScreenShouldBeNotNullDefaultConstructorTest() {
         textField.setText(EXPECTING_RESULT);
-        sortFrame = app.new SortScreen();
-        assertNotNull(sortFrame);
+        App.SortScreen sortScreen = app.new SortScreen(jFrame);
+        assertNotNull(sortScreen);
     }
 
     @Test
     public void sortScreenShouldBeNotNullWhenConstructorWithArgumentsTest() {
         List<Integer> list = Collections.singletonList(5);
-        textField.setText(EXPECTING_RESULT);
-        sortFrame = app.new SortScreen(list);
-        assertNotNull(sortFrame);
+        App.SortScreen sortScreen = app.new SortScreen(jFrame, list);
+        assertNotNull(sortScreen);
+    }
+
+    @Test
+    public void quickSortTest() {
+        Integer[] array = {1, 2, 3, 4};
+        Integer[] anotherArr = array;
+
+        App.QuickSort quickSort = app.new QuickSort(jFrame, array,true);
+        quickSort.quickSort(anotherArr, 0, array.length - 1, true);
+
+        assertArrayEquals(array, anotherArr);
+        assertNotNull(quickSort);
     }
 }
