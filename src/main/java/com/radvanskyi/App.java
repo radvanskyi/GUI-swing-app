@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 
 public class App {
 
-    private static final String WRONG_QUANTITY_MESSAGE = "The number must be in the range from 1 to 30";
     private static final int DEFAULT_SCREEN_WIDTH = 1200;
     private static final int DEFAULT_SCREEN_HEIGHT = 600;
     private static final int MAX_BUTTON_QUANTITY = 30;
@@ -44,6 +44,7 @@ public class App {
 
     public class IntroScreen extends JFrame {
 
+        public static final String WRONG_INPUT_MESSAGE = "The input must be number more than 0";
         private static final String INTRO_MESSAGE = "How many numbers to display?";
         private static final String INTRO_SCREEN_NAME = "Intro Screen";
         private static final String ENTER_BUTTON = "Enter";
@@ -62,13 +63,16 @@ public class App {
             Container container = introFrame.getContentPane();
             container.setLayout(new GridBagLayout());
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
             gridBagConstraints.insets = insets;
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 0;
             container.add(getJLabel(font), gridBagConstraints);
-            gridBagConstraints.gridy += INCREMENT;
+
+            gridBagConstraints.gridy++;
             container.add(getJTextField(font), gridBagConstraints);
-            gridBagConstraints.gridy += INCREMENT;
+
+            gridBagConstraints.gridy++;
             button = getJButton(ENTER_BUTTON, Color.CYAN, getNewScreenListener(introFrame));
             container.add(button, gridBagConstraints);
         }
@@ -83,11 +87,11 @@ public class App {
             return e -> {
                 String content = textField.getText();
                 int buttonNum = checkValidInputAndGetNumber(content);
-                if (buttonNum > 0 && buttonNum <= MAX_BUTTON_QUANTITY) {
+                if (buttonNum > 0) {
                     jFrame.setVisible(false);
                     new SortScreen();
                 } else {
-                    JOptionPane.showMessageDialog(null, WRONG_QUANTITY_MESSAGE);
+                    JOptionPane.showMessageDialog(null, WRONG_INPUT_MESSAGE);
                 }
             };
         }
@@ -104,6 +108,7 @@ public class App {
 
     public class SortScreen extends JFrame {
 
+        private static final String WRONG_QUANTITY_MESSAGE = "The number must be in the range from 1 to 30";
         private static final String SORT_SCREEN_NAME = "Sort Screen";
         private static final String RESET_BUTTON_NAME = "Reset";
         private static final String SORT_BUTTON_NAME = "Sort";
@@ -154,11 +159,11 @@ public class App {
         }
 
         private void addFuncButtons(GridBagConstraints gridBagConstraints, JFrame sortFrame) {
-            gridBagConstraints.gridx += INCREMENT;
+            gridBagConstraints.gridx++;
             gridBagConstraints.gridy = 0;
             button = getJButton(SORT_BUTTON_NAME, Color.GREEN, getSortListener(sortFrame));
             sortFrame.add(button, gridBagConstraints);
-            gridBagConstraints.gridy += INCREMENT;
+            gridBagConstraints.gridy++;
             button = getJButton(RESET_BUTTON_NAME, Color.GREEN, getResetListener(sortFrame));
             sortFrame.add(button, gridBagConstraints);
         }
@@ -170,7 +175,7 @@ public class App {
             for (int i = 0, colCounter = 0; i < buttonNum; i++, colCounter++) {
                 if (colCounter == DEFAULT_LENGTH) {
                     colCounter = 0;
-                    gridBagConstraints.gridx += INCREMENT;
+                    gridBagConstraints.gridx++;
                 }
                 gridBagConstraints.gridy = colCounter;
                 String buttonName = String.valueOf(listOfNumbers.get(i));
