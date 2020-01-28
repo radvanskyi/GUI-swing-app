@@ -32,7 +32,6 @@ public class App {
     private static final int DEFAULT_INDENT = 20;
     private static final int DEFAULT_LENGTH = 10;
     private static final int BUTTON_WIDTH = 80;
-    private static final int INCREMENT = 1;
 
     private Insets insets = new Insets(DEFAULT_INDENT, DEFAULT_INDENT, 0, DEFAULT_INDENT);
     private JTextField textField;
@@ -114,6 +113,7 @@ public class App {
         private static final String SORT_BUTTON_NAME = "Sort";
         private static final int MAX_RANDOM_NUMBER = 1000;
         private static final double WEIGHT_X = 0.5;
+        private static final int NUM_ONE = 1;
 
         private List<Integer> listOfNumbers;
 
@@ -190,7 +190,7 @@ public class App {
             List<Integer> list = new ArrayList<>();
             list.add(requiredNum);
             list.addAll(random.ints(0, MAX_RANDOM_NUMBER)
-                    .limit(buttonQuantity - INCREMENT)
+                    .limit(buttonQuantity - NUM_ONE)
                     .boxed()
                     .collect(Collectors.toList()));
             return list;
