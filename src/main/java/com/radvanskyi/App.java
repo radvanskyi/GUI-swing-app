@@ -3,12 +3,6 @@ package com.radvanskyi;
 import com.google.common.collect.Comparators;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -18,16 +12,23 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 public class App {
 
     private static final int DEFAULT_SCREEN_WIDTH = 1200;
     private static final int DEFAULT_SCREEN_HEIGHT = 600;
+    private static final int MAX_RANDOM_NUMBER = 1000;
     private static final int MAX_BUTTON_QUANTITY = 30;
     private static final int DEFAULT_INDENT = 20;
     private static final int DEFAULT_LENGTH = 10;
@@ -36,6 +37,7 @@ public class App {
     private Insets insets = new Insets(DEFAULT_INDENT, DEFAULT_INDENT, 0, DEFAULT_INDENT);
     private JTextField textField;
     private JButton button;
+    private JFrame sortFrame;
 
     public static void main(String[] args) {
         new App().new IntroScreen();
@@ -43,7 +45,7 @@ public class App {
 
     public class IntroScreen extends JFrame {
 
-        public static final String WRONG_INPUT_MESSAGE = "The input must be number more than 0";
+        private static final String WRONG_INPUT_MESSAGE = "The input must be number more than 0";
         private static final String INTRO_MESSAGE = "How many numbers to display?";
         private static final String INTRO_SCREEN_NAME = "Intro Screen";
         private static final String ENTER_BUTTON = "Enter";
@@ -87,14 +89,13 @@ public class App {
                 String content = textField.getText();
                 int buttonNum = checkValidInputAndGetNumber(content);
                 if (buttonNum > 0) {
-                    jFrame.setVisible(false);
+                    jFrame.dispose();
                     new SortScreen();
                 } else {
                     JOptionPane.showMessageDialog(null, WRONG_INPUT_MESSAGE);
                 }
             };
         }
-
 
         private int checkValidInputAndGetNumber(String content) {
             int buttonNum = 0;
@@ -111,14 +112,13 @@ public class App {
         private static final String SORT_SCREEN_NAME = "Sort Screen";
         private static final String RESET_BUTTON_NAME = "Reset";
         private static final String SORT_BUTTON_NAME = "Sort";
-        private static final int MAX_RANDOM_NUMBER = 1000;
         private static final double WEIGHT_X = 0.5;
         private static final int NUM_ONE = 1;
 
         private List<Integer> listOfNumbers;
 
         public SortScreen() {
-            JFrame sortFrame = new JFrame(SORT_SCREEN_NAME);
+            sortFrame = new JFrame(SORT_SCREEN_NAME);
             addComponentsToSortScreenContainer(sortFrame);
             sortFrame.setSize(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
             sortFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -127,7 +127,7 @@ public class App {
         }
 
         public SortScreen(List<Integer> sortedList) {
-            JFrame sortFrame = new JFrame(SORT_SCREEN_NAME);
+            sortFrame = new JFrame(SORT_SCREEN_NAME);
             addSortedComponentsToSortScreenContainer(sortFrame, sortedList);
             sortFrame.setSize(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
             sortFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -205,14 +205,11 @@ public class App {
 
         private ActionListener getSortListener(JFrame sortFrame) {
             return e -> {
-                boolean inAscendingOrder = Comparators.isInOrder(listOfNumbers, Comparator.naturalOrder());
-                if (inAscendingOrder) {
-                    listOfNumbers.sort(Collections.reverseOrder());
-                } else {
-                    Collections.sort(listOfNumbers);
-                }
-                sortFrame.dispose();
-                new SortScreen(listOfNumbers);
+                boolean ascendingOrder = Comparators.isInOrder(listOfNumbers, Comparator.naturalOrder());
+                Integer[] array = getArrayFromList(listOfNumbers);
+                QuickSort quickSort = new QuickSort(array, ascendingOrder);
+                Thread thread = new Thread(quickSort);
+                thread.start();
             };
         }
 
@@ -226,6 +223,12 @@ public class App {
                     new SortScreen(listOfNumbers);
                 }
             };
+        }
+
+        private Integer[] getArrayFromList(List<Integer> listOfNumbers) {
+            Integer[] array = new Integer[listOfNumbers.size()];
+            array = listOfNumbers.toArray(array);
+            return array;
         }
     }
 
@@ -245,5 +248,78 @@ public class App {
 
     public JTextField getTextField() {
         return textField;
+    }
+
+    public class QuickSort implements Runnable {
+
+        private boolean ascOrder;
+        private Integer[] array;
+
+        public QuickSort(Integer[] array, boolean ascOrder) {
+            this.ascOrder = ascOrder;
+            this.array = array;
+        }
+
+        @Override
+        public void run() {
+            quickSort(array, 0, array.length - 1, ascOrder);
+        }
+
+        private void quickSort(Integer[] array, int arrStart, int arrEnd, boolean ascOrder) {
+            if (array.length == 0) {
+                return;
+            }
+            if (arrStart >= arrEnd) {
+                return;
+            }
+
+            int middleItem = array[arrStart + (arrEnd - arrStart) / 2];
+            int tempStart = arrStart;
+            int tempEnd = arrEnd;
+
+            while (tempStart <= tempEnd) {
+                if (!ascOrder) {
+                    while (array[tempStart] < middleItem) {
+                        tempStart++;
+                    }
+                    while (array[tempEnd] > middleItem) {
+                        tempEnd--;
+                    }
+                } else {
+                    while (array[tempStart] > middleItem) {
+                        tempStart++;
+                    }
+                    while (array[tempEnd] < middleItem) {
+                        tempEnd--;
+                    }
+                }
+                if (tempStart <= tempEnd) {
+                    int temp = array[tempStart];
+                    array[tempStart] = array[tempEnd];
+                    array[tempEnd] = temp;
+                    tempStart++;
+                    tempEnd--;
+                }
+                List<Integer> list = Arrays.asList(array);
+                sortFrame.dispose();
+                new SortScreen(list);
+                treadSleep();
+            }
+
+            if (arrStart < tempEnd) {
+                quickSort(array, arrStart, tempEnd, ascOrder);
+            }
+            if (arrEnd > tempStart) {
+                quickSort(array, tempStart, arrEnd, ascOrder);
+            }
+        }
+
+        private void treadSleep() {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
