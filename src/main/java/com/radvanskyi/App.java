@@ -302,10 +302,7 @@ public class App extends JFrame {
                     tempStart++;
                     tempEnd--;
                 }
-                frame.getContentPane().removeAll();
-                new SortScreen(frame, Arrays.asList(array));
-                frame.repaint();
-                treadSleep();
+                repaintAfterSorting(array);
             }
 
             if (arrStart < tempEnd) {
@@ -314,6 +311,13 @@ public class App extends JFrame {
             if (arrEnd > tempStart) {
                 quickSort(array, tempStart, arrEnd, ascOrder);
             }
+        }
+
+        private void repaintAfterSorting(Integer[] array) {
+            frame.getContentPane().removeAll();
+            new SortScreen(frame, Arrays.asList(array));
+            frame.repaint();
+            treadSleep();
         }
 
         private void treadSleep() {
