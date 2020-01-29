@@ -34,14 +34,12 @@ public class App extends JFrame {
     private static final int DEFAULT_LENGTH = 10;
     private static final int BUTTON_WIDTH = 80;
 
-    private List<JButton> buttonList;
     private JTextField textField;
     private JButton button;
     private Insets insets;
 
     public App() {
         insets = new Insets(DEFAULT_INDENT, DEFAULT_INDENT, 0, DEFAULT_INDENT);
-        buttonList = new ArrayList<>();
         new IntroScreen(this);
     }
 
@@ -167,11 +165,9 @@ public class App extends JFrame {
             gridBagConstraints.gridx++;
             gridBagConstraints.gridy = 0;
             button = getJButton(SORT_BUTTON_NAME, Color.GREEN, getSortListener(frame));
-            buttonList.add(button);
             frame.add(button, gridBagConstraints);
             gridBagConstraints.gridy++;
             button = getJButton(RESET_BUTTON_NAME, Color.GREEN, getResetListener(frame));
-            buttonList.add(button);
             frame.add(button, gridBagConstraints);
         }
 
@@ -187,7 +183,6 @@ public class App extends JFrame {
                 gridBagConstraints.gridy = colCounter;
                 String buttonName = String.valueOf(listOfNumbers.get(i));
                 button = getJButton(buttonName, Color.CYAN, getNumButtonListener(frame));
-                buttonList.add(button);
                 frame.add(button, gridBagConstraints);
             }
         }
@@ -207,7 +202,6 @@ public class App extends JFrame {
         private ActionListener getResetListener(JFrame frame) {
             return e -> {
                 frame.getContentPane().removeAll();
-                buttonList.clear();
                 new IntroScreen(frame);
                 frame.repaint();
             };
@@ -290,7 +284,6 @@ public class App extends JFrame {
             int tempEnd = arrEnd;
 
             while (tempStart <= tempEnd) {
-                enableButtons(buttonList, false);
                 if (!ascOrder) {
                     while (array[tempStart] < middleItem) {
                         tempStart++;
@@ -322,11 +315,6 @@ public class App extends JFrame {
             if (arrEnd > tempStart) {
                 quickSort(array, tempStart, arrEnd, ascOrder);
             }
-            enableButtons(buttonList, true);
-        }
-
-        private void enableButtons(List<JButton> buttonList, boolean enable) {
-            buttonList.forEach(button -> button.setEnabled(enable));
         }
 
         private void repaintAfterSorting(Integer[] array) {
