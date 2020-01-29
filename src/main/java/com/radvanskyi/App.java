@@ -34,11 +34,14 @@ public class App extends JFrame {
     private static final int DEFAULT_LENGTH = 10;
     private static final int BUTTON_WIDTH = 80;
 
-    private Insets insets = new Insets(DEFAULT_INDENT, DEFAULT_INDENT, 0, DEFAULT_INDENT);
+    private List<JButton> buttonList;
     private JTextField textField;
     private JButton button;
+    private Insets insets;
 
     public App() {
+        insets = new Insets(DEFAULT_INDENT, DEFAULT_INDENT, 0, DEFAULT_INDENT);
+        buttonList = new ArrayList<>();
         new IntroScreen(this);
     }
 
@@ -107,7 +110,7 @@ public class App extends JFrame {
         }
     }
 
-    public class SortScreen extends JFrame {
+    public class SortScreen {
 
         private static final String WRONG_QUANTITY_MESSAGE = "The number must be in the range from 1 to 30";
         private static final String RESET_BUTTON_NAME = "Reset";
@@ -160,9 +163,11 @@ public class App extends JFrame {
             gridBagConstraints.gridx++;
             gridBagConstraints.gridy = 0;
             button = getJButton(SORT_BUTTON_NAME, Color.GREEN, getSortListener(frame));
+            buttonList.add(button);
             frame.add(button, gridBagConstraints);
             gridBagConstraints.gridy++;
             button = getJButton(RESET_BUTTON_NAME, Color.GREEN, getResetListener(frame));
+            buttonList.add(button);
             frame.add(button, gridBagConstraints);
         }
 
@@ -178,6 +183,7 @@ public class App extends JFrame {
                 gridBagConstraints.gridy = colCounter;
                 String buttonName = String.valueOf(listOfNumbers.get(i));
                 button = getJButton(buttonName, Color.CYAN, getNumButtonListener(frame));
+                buttonList.add(button);
                 frame.add(button, gridBagConstraints);
             }
         }
@@ -187,7 +193,7 @@ public class App extends JFrame {
             int requiredNum = random.nextInt(MAX_BUTTON_QUANTITY);
             List<Integer> list = new ArrayList<>();
             list.add(requiredNum);
-            list.addAll(random.ints(0, MAX_RANDOM_NUMBER)
+            list.addAll(random.ints(1, MAX_RANDOM_NUMBER)
                     .limit(buttonQuantity - NUM_ONE)
                     .boxed()
                     .collect(Collectors.toList()));
@@ -197,6 +203,7 @@ public class App extends JFrame {
         private ActionListener getResetListener(JFrame frame) {
             return e -> {
                 frame.getContentPane().removeAll();
+                buttonList.clear();
                 new IntroScreen(frame);
                 frame.repaint();
             };
@@ -219,7 +226,7 @@ public class App extends JFrame {
                     JOptionPane.showMessageDialog(null, WRONG_QUANTITY_MESSAGE);
                 } else {
                     frame.getContentPane().removeAll();
-                    new SortScreen(frame, listOfNumbers);
+                    new SortScreen(frame, addListOfNumbers(num));
                     frame.repaint();
                 }
             };
@@ -227,8 +234,7 @@ public class App extends JFrame {
 
         private Integer[] getArrayFromList(List<Integer> listOfNumbers) {
             Integer[] array = new Integer[listOfNumbers.size()];
-            array = listOfNumbers.toArray(array);
-            return array;
+            return listOfNumbers.toArray(array);
         }
     }
 
@@ -280,6 +286,7 @@ public class App extends JFrame {
             int tempEnd = arrEnd;
 
             while (tempStart <= tempEnd) {
+                enableButtons(buttonList, false);
                 if (!ascOrder) {
                     while (array[tempStart] < middleItem) {
                         tempStart++;
@@ -311,18 +318,23 @@ public class App extends JFrame {
             if (arrEnd > tempStart) {
                 quickSort(array, tempStart, arrEnd, ascOrder);
             }
+            enableButtons(buttonList, true);
+        }
+
+        private void enableButtons(List<JButton> buttonList, boolean enable) {
+            buttonList.forEach(button -> button.setEnabled(enable));
         }
 
         private void repaintAfterSorting(Integer[] array) {
+            treadSleep();
             frame.getContentPane().removeAll();
             new SortScreen(frame, Arrays.asList(array));
             frame.repaint();
-            treadSleep();
         }
 
         private void treadSleep() {
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
