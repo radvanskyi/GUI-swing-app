@@ -50,7 +50,7 @@ public class App extends JFrame {
     }
 
     public class IntroScreen {
-        private static final String WRONG_INPUT_MESSAGE = "The input must be number more than 0";
+        private static final String WRONG_INPUT_MESSAGE = "The input must be number more than 0 and less than 300";
         private static final String INTRO_MESSAGE = "How many numbers to display?";
         private static final String ENTER_BUTTON = "Enter";
 
@@ -91,7 +91,7 @@ public class App extends JFrame {
             return e -> {
                 String content = textField.getText();
                 int buttonNum = checkValidInputAndGetNumber(content);
-                if (buttonNum > 0) {
+                if (checkInputRange(buttonNum)) {
                     frame.getContentPane().removeAll();
                     new SortScreen(frame);
                     frame.getContentPane().repaint();
@@ -99,6 +99,10 @@ public class App extends JFrame {
                     JOptionPane.showMessageDialog(null, WRONG_INPUT_MESSAGE);
                 }
             };
+        }
+
+        private boolean checkInputRange(int buttonNum) {
+            return buttonNum > 0 && buttonNum < 300;
         }
 
         private int checkValidInputAndGetNumber(String content) {
