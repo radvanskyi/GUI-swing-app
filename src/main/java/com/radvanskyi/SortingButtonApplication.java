@@ -353,7 +353,7 @@ public class SortingButtonApplication extends JFrame {
          * This method is responsible for getting Array from List.
          *
          * @param listOfNumbers - list of numbers for buttons
-         * @return array of buttons numbers (names)
+         * @return array of numbers for buttons
          */
         private Integer[] getArrayFromList(List<Integer> listOfNumbers) {
             Integer[] array = new Integer[listOfNumbers.size()];
@@ -392,14 +392,14 @@ public class SortingButtonApplication extends JFrame {
     /**
      * This method is responsible for getting textField from app instance
      *
-     * @return textField
+     * @return current textField of the application
      */
     public JTextField getTextField() {
         return textField;
     }
 
     /**
-     * Internal class. Thread that is responsible for sorting buttons numbers.
+     * Internal class. Thread that is responsible for sorting number buttons.
      */
     public class QuickSort implements Runnable {
 
